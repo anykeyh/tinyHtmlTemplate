@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": "https://github.com/anykeyh/tinyHtmlTemplate",
   "keywords": [
     "html",
     "template",
@@ -16,6 +17,8 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-coffee": "^2.3.2",
     "mocha": "^2.5.3"
   }
 }
