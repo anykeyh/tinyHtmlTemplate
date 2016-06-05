@@ -37,12 +37,13 @@ do (o=(if module? then module.exports={} else window)) ->
         tabs += " "
         consoleError(">#{tabs}%O",x)
 
+    m="#{_STR_THT}#{_STR_ERROR}"
     if consoleGroup
-      consoleGroup("%c#{_STR_THT}#{_STR_ERROR}","font-style: italic; color: red; background-color: white;")
+      consoleGroup("%c#{m}")
       debugPrint()
       consoleGroupEnd()
     else
-      consoleError("#{_STR_THT}#{_STR_ERROR}")
+      consoleError(m)
       debugPrint()
 
   # Generate a tag type function
