@@ -1,0 +1,21 @@
+{
+  "name": "tinyHtmlTemplate",
+  "version": "0.0.1",
+  "description": "Create and render HTML template built in javascript. Performance and low memory-footprint",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "html",
+    "template",
+    "dsl",
+    "coffeescript"
+  ],
+  "author": "Yacine Petitprez <anykeyh@gmail.com> (https://github.com/anykeyh/)",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
+  }
+}
