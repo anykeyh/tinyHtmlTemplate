@@ -64,7 +64,7 @@ You can create subtemplates and call them easily:
 
 ```javascript
   Template.register('Important', function(text){
-    this.strong("/!\" + text);
+    this.strong("/!\\" + text);
   } );
 
   Template.render(document.body, function(){
