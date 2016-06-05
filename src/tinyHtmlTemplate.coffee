@@ -1,6 +1,6 @@
-_STR_THT = "tinyHtmlTemplate"
+do (o=(if module? then module.exports={} else window)) ->
+  _STR_THT = "tinyHtmlTemplate"
 
-(if module? then module.exports={} else window)[_STR_THT] = do ->
   ###
     List of standard tags.
   ###
@@ -11,6 +11,7 @@ _STR_THT = "tinyHtmlTemplate"
   ###
   _STR_STRING = 'string'
   _STR_FUNCTION = 'function'
+  _STR_ERROR = "error"
 
   ###
     Methods for debug.
@@ -18,9 +19,9 @@ _STR_THT = "tinyHtmlTemplate"
   dc = [] #Debug context stack.
 
   # Better once minifed. No perf cost.
-  consoleGroup = console.groupCollapsed.bind(console)
-  consoleGroupEnd = console.groupEnd.bind(console)
-  consoleError = console.error.bind(console)
+  [ consoleGroup = console.groupCollapsed,
+    consoleGroupEnd = console.groupEnd
+    consoleError = console[_STR_ERROR] ].map((x) -> x.bind(console))
   # Better once minifed in the cost of slight performance
   _is = (o,x) -> typeof(o) is x
 
@@ -37,11 +38,11 @@ _STR_THT = "tinyHtmlTemplate"
         consoleError(">#{tabs}%O",x)
 
     if consoleGroup
-      consoleGroup("%c #{_STR_THT} error!","font-style: italic; color: red; background-color: white;")
+      consoleGroup("%c#{_STR_THT}#{_STR_ERROR}","font-style: italic; color: red; background-color: white;")
       debugPrint()
       consoleGroupEnd()
     else
-      consoleError("#{_STR_THT} error!")
+      consoleError("#{_STR_THT}#{_STR_ERROR}")
       debugPrint()
 
   # Generate a tag type function
@@ -70,7 +71,8 @@ _STR_THT = "tinyHtmlTemplate"
       @_e = elm #Element related to this DSL. can be null!
       @_c = [] #array of children
 
-    appendTo: (elm) ->
+    #AppendTo
+    ato: (elm) ->
       for x in @_c
         elm.appendChild(x)
 
@@ -94,8 +96,7 @@ _STR_THT = "tinyHtmlTemplate"
 
       @_c.push(cElm)
 
-      if _is(cb, _STR_STRING)
-        text = cb
+      if _is(text=cb, _STR_STRING)
         cb = -> @text(text)
 
       if cb
@@ -104,7 +105,7 @@ _STR_THT = "tinyHtmlTemplate"
         dsl = new HTML_DSL(cElm)
         pushdc( cElm  )
         cb.call(dsl)
-        dsl.appendTo(dsl._e)
+        dsl.ato(dsl._e)
         popdc(tagName)
 
   for tag in TAGS
@@ -117,23 +118,22 @@ _STR_THT = "tinyHtmlTemplate"
     render: (elm, cb) ->
       try
         pushdc("#render")
-        if not cb? and _is(elm, _STR_FUNCTION)
+        if not cb and _is(elm, _STR_FUNCTION)
           cb = elm
           elm = null
 
         if elm
-          dsl = new HTML_DSL()
-          cb.call(dsl)
-          dsl.appendTo(elm)
+          dsl = new HTML_DSL
+          cb.call dsl
+          dsl.ato(elm)
           return elm
         else
-          dsl = new HTML_DSL()
-          cb.call(dsl)
+          dsl = new HTML_DSL
+          cb.call dsl
           return dsl
         popdc()
       catch e
         showdc()
         throw e;
 
-
-  return HTML;
+  o[_STR_THT] = HTML;
