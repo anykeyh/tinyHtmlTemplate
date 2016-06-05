@@ -28,33 +28,36 @@ This lib has been built first because I work with coffeescript. So it's very nic
 You can still use it on Javascript:
 
 ```javascript
-  // Using browserify. Otherwise there's an object "window.tinyHtmlTemplate"
-  var Template = require('tinyHtmlTemplate').tinyHtmlTemplate;
 
-  // Render into the parent element. Can be anything.
-  var parent = document.getElementById("theParent");
+    // No browserify = using window object
+    var Template = tinyHtmlTemplate;
 
-  Template.render(parent, function(){
-    this.div({id: "template"},function(){
-      this.text("Templating is so easy!");
-      this.a({href: "#"}, function(){
-        this.text("Click here to see binded event!");
-        this.on("click", function(evt){
-          alert("This is when I click the <a> element !");
+    // Render into the parent element. Can be anything.
+    var parent = document.getElementById("theParent");
+
+    Template.render(parent, function(){
+      this.div({id: "template"},function(){
+        this.text("Templating is so easy!");
+        this.a({href: "#"}, function(){
+          this.text("Click here to see binded event!");
+          this.on("click", function(evt){
+            alert("This is when I click the <a> element !");
+          });
+        })
+        this.p("You can also write the content like this", function(){
+          this.ul(function(){
+            this.li({innerHTML: "You can set html<br><strong>like this</strong>"})
+            this.li(function(){
+              this.text("Or like")
+              this.br();
+              this.span({style: { backgroundColor: "red", color: "white" }}, function(){
+                this.text("that.");
+              });
+            })
+          })
         });
       })
-      this.p("You can also write the content like this", function(){
-        this.ul(function(){
-          this.li(htmlContent: "You can set html<br><strong>like this</strong>")
-          this.li(function(){
-            this.text("Or like")
-            this.br()
-            this.text({style: { backgroundColor: "red", color: "white" }}, "that.");
-          })
-        })
-      });
     })
-  })
 
 ```
 
@@ -64,12 +67,17 @@ You can create subtemplates and call them easily:
 
 ```javascript
   Template.register('Important', function(text){
-    this.strong("/!\\" + text);
+    this.strong("/!\\ " + text);
   } );
 
   Template.render(document.body, function(){
     this.Important("This is an important message!");
   })
 ```
+
+## Additional notes
+
+The properties are directly linked to `HTMLElement`. So if you want to set the
+attribute `class` or `for`, you should use `className` or `htmlFor`
 
 Get a look to the `examples` folder for a ultra simple homemade MVC.

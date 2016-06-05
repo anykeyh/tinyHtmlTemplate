@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Example in the README</title>
+  <script src="../../lib/tinyHtmlTemplate.js"></script>
+</head>
+<body>
+  <div id="theParent"></div>
+  <script>
+    // No browserify = using window object
+    var Template = tinyHtmlTemplate;
+
+    // Render into the parent element. Can be anything.
+    var parent = document.getElementById("theParent");
+
+    Template.render(parent, function(){
+      this.div({id: "template"},function(){
+        this.text("Templating is so easy! ");
+        this.a({href: "#"}, function(){
+          this.text("Click here to see binded event!");
+          this.on("click", function(evt){
+            alert("This is when I click the <a> element !");
+          });
+        })
+        this.p("You can also write the content like this", function(){
+          this.ul(function(){
+            this.li({innerHTML: "You can set html<br><strong>like this</strong>"})
+            this.li(function(){
+              this.text("Or like")
+              this.br();
+              this.span({style: { backgroundColor: "red", color: "white" }}, function(){
+                this.text("that.");
+              });
+            })
+          })
+        });
+      })
+    })
+
+    Template.register('Important', function(text){
+      this.strong("/!\\ " + text);
+    } );
+
+    Template.render(document.body, function(){
+      this.Important("This is an important message!");
+    })
+  </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-Template = require("../index").tinyHtmlTemplate
+Template = tinyHtmlTemplate
 
 _uid = 1
 nextUID = ->
@@ -17,14 +17,15 @@ Controller = {
       todos.splice(idx, 1)
       View.render()
       break
-  toggleDone: (todo) ->
-    todo.done = !todo.done
-    View.render()
+  toggleDone: (todo, value) ->
+    todo.done = value
 }
 
 View =
   render: ->
-    Template.render(todoListElm, TodoListView(todos))
+    todoList = document.getElementById("todo-list")
+    todoList.removeChild(todoList.firstChild) while (todoList.firstChild)
+    Template.render(todoList, -> @TodoListView(todos) )
 
 Template.register "TodoListView", (todoList) ->
   @div id: "todo-list-component", ->
@@ -32,20 +33,12 @@ Template.register "TodoListView", (todoList) ->
       for todo in todoList
         @TodoView(todo)
 
-Template.register "RecordView", (record) ->
+Template.register "TodoView", (record) ->
   @div className: "record", ->
-    @h2 "Data"
-    @label "Name"
-    @text record.name
-    @h2 "Actions"
-    @ul ->
-      @li ->
-        @a href: "/#{record.id}/edit", ->
-          @text "Edit"
-          @on "click", (evt) ->
-            alert("TODO: Ajax call instead ! :)")
-            evt.preventDefault()
-      @li ->
-        @a href: "/#{record.id}/delete", "Delete"
+    @input type: "checkbox", id: "todo_#{record.id}", checked: record.done, ->
+      @on 'change', (evt) ->
+        Controller.toggleDone(record, evt.value)
+
+    @label htmlFor: "todo_#{record.id}", record.name
 
 View.render()
